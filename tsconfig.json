@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "es2015",
+		"module": "System",
+		"lib": ["dom", "es2018"],
+
+		"rootDir": "src",
+		"outDir": "build",
+		"outFile": "./build/celtic.js",
+		"sourceMap": true,
+	},
+    "exclude": [
+        "node_modules"
+    ]
+}

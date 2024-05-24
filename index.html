@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<style type="text/css">
+		canvas
+		{
+			border: 1px solid #aaa;
+		}
+		label
+		{
+			display: block;
+		}
+	</style>
+	<script src="https://unpkg.com/systemjs@6.11.0/dist/s.js"></script>
+	<script src="https://unpkg.com/systemjs@6.11.0/dist/extras/named-register.js"></script>
+	<script type="application/javascript" src="celtic.js"></script>
+	<script type="application/javascript">
+		System.import('./build/celtic.js').then( celtic => { main( celtic ) } );
+	</script>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="200"></canvas>
+</body>
+</html>
