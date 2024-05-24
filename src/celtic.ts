@@ -6,7 +6,8 @@ export class CelticCanvas
 	grid_width = 5;
 	grid_height = 5;
 	grid_spacing = 80;
-	dot_size = 6;
+	margin = 80;
+	dot_size = 0.075;
 
 	constructor( canvas: HTMLCanvasElement, scale )
 	{
@@ -71,14 +72,12 @@ export class CelticCanvas
 
 		for( var x = 0; x < this.grid_width + 1; x++ )
 		{
-			graphics.moveTo( ( x + 1 ) * this.grid_spacing, this.grid_spacing );
-			graphics.lineTo( ( x + 1 ) * this.grid_spacing, this.grid_spacing + this.grid_height * this.grid_spacing );
+			this.line( graphics, x, 0, x, this.grid_height );
 		}
 		
 		for( var y = 0; y < this.grid_height + 1; y++ )
 		{
-			graphics.moveTo( this.grid_spacing, ( y + 1 ) * this.grid_spacing );
-			graphics.lineTo( this.grid_spacing + this.grid_width * this.grid_spacing, ( y + 1 ) * this.grid_spacing );
+			this.line( graphics, 0, y, this.grid_width, y );
 		}
 
 		graphics.stroke();
@@ -91,11 +90,11 @@ export class CelticCanvas
 		{
 			for( var y = 0; y < this.grid_height + 1; y++ )
 			{
-				this.dot( graphics, ( x + 1 ) * this.grid_spacing, ( y + 1 ) * this.grid_spacing, this.dot_size );
+				this.dot( graphics, x, y, this.dot_size );
 				
 				if( x > 0 && y > 0 )
 				{
-					this.dot( graphics, ( x + 0.5 ) * this.grid_spacing, ( y + 0.5 ) * this.grid_spacing, this.dot_size );
+					this.dot( graphics, x - 0.5, y - 0.5, this.dot_size );
 				}
 			}
 		}
@@ -110,11 +109,17 @@ export class CelticCanvas
 		{
 			for( var x = 0; x < this.grid_width - 1; x++ )
 			{
-				graphics.moveTo( ( x + 1.5 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2, ( y + 1.5 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2 );
-				graphics.lineTo( ( x + 2 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2, ( y + 1 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2 );
+				this.line(
+					graphics,
+					x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
+					x + 1 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
+				);
 
-				graphics.moveTo( ( x + 2 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2, ( y + 2 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2 );
-				graphics.lineTo( ( x + 2.5 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2, ( y + 1.5 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2 );
+				this.line(
+					graphics,
+					x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
+					x + 1.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 - this.dot_size * Math.sqrt(2)/2
+				);
 			}
 		}
 
@@ -131,11 +136,17 @@ export class CelticCanvas
 		{
 			for( var x = 0; x < this.grid_width; x++ )
 			{
-				graphics.moveTo( ( x + 1.5 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2, ( y + 1.5 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2 );
-				graphics.lineTo( ( x + 2 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2, ( y + 2 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2 );
+				this.line(
+					graphics,
+					x + 0.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
+					x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2
+				);
 
-				graphics.moveTo( ( x + 1 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2, ( y + 2 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2 );
-				graphics.lineTo( ( x + 1.5 ) * this.grid_spacing + this.dot_size * Math.sqrt(2)/2, ( y + 2.5 ) * this.grid_spacing - this.dot_size * Math.sqrt(2)/2 );
+				this.line(
+					graphics,
+					x + this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
+					x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 1.5 - this.dot_size * Math.sqrt(2)/2
+				);
 			}
 		}
 
@@ -148,11 +159,10 @@ export class CelticCanvas
 		graphics.lineWidth = 2;
 		graphics.beginPath();
 
-		graphics.moveTo( this.grid_spacing, this.grid_spacing );
-		graphics.lineTo( ( this.grid_width + 1 ) * this.grid_spacing, this.grid_spacing );
-		graphics.lineTo( ( this.grid_width + 1 ) * this.grid_spacing, ( this.grid_height + 1 ) * this.grid_spacing );
-		graphics.lineTo( this.grid_spacing, ( this.grid_height + 1 ) * this.grid_spacing );
-		graphics.lineTo( this.grid_spacing, this.grid_spacing );
+		this.line( graphics, 0, 0, this.grid_width, 0 );
+		this.line( graphics, this.grid_width, 0, this.grid_width, this.grid_height );
+		this.line( graphics, this.grid_width, this.grid_height, 0, this.grid_height );
+		this.line( graphics, 0, this.grid_height, 0, 0 );
 		
 		graphics.stroke();
 		graphics.closePath();
@@ -162,13 +172,24 @@ export class CelticCanvas
 		graphics.lineWidth = save_width;
 	}
 
-	dot( graphics: CanvasRenderingContext2D, x, y, r: number )
+	line( graphics: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number )
+	{
+		graphics.moveTo( this.g2p( x1 ), this.g2p( y1 ) );
+		graphics.lineTo( this.g2p( x2 ), this.g2p( y2 ) );
+	}
+
+	dot( graphics: CanvasRenderingContext2D, x: number, y: number, r: number )
 	{
 		graphics.beginPath();
-		graphics.arc( x, y, r, 0, 2 * Math.PI );
+		graphics.arc( this.g2p( x ), this.g2p( y ), r * this.grid_spacing, 0, 2 * Math.PI );
 		graphics.stroke();
 		graphics.fill();
 		graphics.closePath();
+	}
+	
+	g2p( x: number ): number
+	{
+		return this.margin + x * this.grid_spacing;
 	}
 
 	update( graphics: CanvasRenderingContext2D )
