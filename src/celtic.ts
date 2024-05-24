@@ -9,6 +9,20 @@ export class CelticCanvas
 	margin = 80;
 	dot_size = 0.075;
 
+	horizontal_walls: number[][] = [
+		[ 2, 2 ],
+		[ 2, 3 ],
+		[ 0.5, 2.5 ],
+		[ 3.5, 2.5 ],
+	];
+
+	vertical_walls: number[][] = [
+		[ 2, 2 ],
+		[ 3, 2 ],
+		[ 2.5, 0.5 ],
+		[ 2.5, 3.5 ],
+	];
+
 	constructor( canvas: HTMLCanvasElement, scale )
 	{
 		const rect = canvas.getBoundingClientRect();
@@ -99,6 +113,25 @@ export class CelticCanvas
 			}
 		}
 		
+		// walls
+				
+		graphics.strokeStyle = '#f88';
+		graphics.lineWidth = 2;
+		graphics.beginPath();
+
+		for( var [ x, y ] of this.horizontal_walls )
+		{	
+			this.line( graphics, x, y, x + 1, y );
+		}
+
+		for( var [ x, y ] of this.vertical_walls )
+		{	
+			this.line( graphics, x, y, x, y + 1 );
+		}
+
+		graphics.stroke();
+		graphics.closePath();
+		
 		// up lines
 
 		graphics.strokeStyle = '#888';
@@ -109,17 +142,20 @@ export class CelticCanvas
 		{
 			for( var x = 0; x < this.grid_width - 1; x++ )
 			{
-				this.line(
-					graphics,
-					x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
-					x + 1 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
-				);
+				if( ! this.hasWall( x + 0.5, y + 0.5, x + 1, y ) )
+				{
+					this.line(
+						graphics,
+						x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
+						x + 1 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
+					);
 
-				this.line(
-					graphics,
-					x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
-					x + 1.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 - this.dot_size * Math.sqrt(2)/2
-				);
+					this.line(
+						graphics,
+						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
+						x + 1.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 - this.dot_size * Math.sqrt(2)/2
+					);
+				}
 			}
 		}
 
@@ -136,17 +172,20 @@ export class CelticCanvas
 		{
 			for( var x = 0; x < this.grid_width; x++ )
 			{
-				this.line(
-					graphics,
-					x + 0.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
-					x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2
-				);
+				if( ! this.hasWall( x, y + 1, x + 0.5, y + 0.5 ) )
+				{
+					this.line(
+						graphics,
+						x + 0.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
+						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2
+					);
 
-				this.line(
-					graphics,
-					x + this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
-					x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 1.5 - this.dot_size * Math.sqrt(2)/2
-				);
+					this.line(
+						graphics,
+						x + this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
+						x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 1.5 - this.dot_size * Math.sqrt(2)/2
+					);
+				}
 			}
 		}
 
@@ -190,6 +229,23 @@ export class CelticCanvas
 	g2p( x: number ): number
 	{
 		return this.margin + x * this.grid_spacing;
+	}
+
+	hasWall( hx: number, hy: number, vx: number, vy: number ): boolean
+	{
+		for( let [ x, y ] of this.horizontal_walls )
+		{
+			if( x == hx && y == hy )
+				return true;
+		}
+
+		for( let [ x, y ] of this.vertical_walls )
+		{
+			if( x == vx && y == vy )
+				return true;
+		}
+		
+		return false;
 	}
 
 	update( graphics: CanvasRenderingContext2D )
