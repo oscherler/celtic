@@ -14,6 +14,8 @@ export class CelticCanvas
 		[ 4, 6 ],
 		[ 1, 5 ],
 		[ 7, 5 ],
+		[ 6, 2 ],
+		[ 2, 8 ],
 	];
 
 	vertical_walls: number[][] = [
@@ -21,6 +23,8 @@ export class CelticCanvas
 		[ 6, 4 ],
 		[ 5, 1 ],
 		[ 5, 7 ],
+		[ 2, 2 ],
+		[ 8, 6 ],
 	];
 
 	constructor( canvas: HTMLCanvasElement, scale )
@@ -192,6 +196,119 @@ export class CelticCanvas
 		graphics.stroke();
 		graphics.closePath();
 		
+		// up segments
+		
+		graphics.strokeStyle = '#0f0';
+		graphics.fillStyle = '#0f0';
+		graphics.beginPath();
+
+		let n = Math.sqrt(2)/2 - this.dot_size
+		let m = Math.sqrt(2)/4
+
+		for( var x = 0; x < this.grid_width + 1; x +=2 )
+		{
+			for( var y = 1; y < this.grid_height; y +=2 )
+			{
+				let wallLeft = this.hasWallLeft( x, y - 1 );
+				let wallRight = this.hasWallRight( x, y - 1 );
+				let wallAbove = this.hasWallAbove( x - 1, y );
+				let wallBelow = this.hasWallBelow( x - 1, y );
+
+				if( wallLeft )
+				{
+					this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
+					this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
+					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+				}
+				
+				if( wallRight )
+				{
+					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+					this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
+					this.line( graphics, x - n/2, y + n/2, x - n, y + n );
+				}
+
+				if( wallBelow )
+				{
+					// above
+					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+					this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
+					this.line( graphics, x + n/2, y - n/2, x + n, y - n );
+				}
+
+				if( wallAbove )
+				{
+					// below
+					this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
+					this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
+					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+				}
+				
+				if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
+				{
+					this.line( graphics, x - n, y + n, x + n, y - n );
+				}
+			}
+		}
+
+		graphics.stroke();
+		graphics.closePath();
+		
+		// down segments
+		
+		graphics.strokeStyle = '#00f';
+		graphics.fillStyle = '#00f';
+		graphics.beginPath();
+
+		for( var x = 1; x < this.grid_width; x +=2 )
+		{
+			for( var y = 0; y < this.grid_height + 1; y +=2 )
+			{
+				let wallLeft = this.hasWallLeft( x, y - 1 );
+				let wallRight = this.hasWallRight( x, y - 1 );
+				let wallAbove = this.hasWallAbove( x - 1, y );
+				let wallBelow = this.hasWallBelow( x - 1, y );
+				
+				if( wallLeft )
+				{
+					this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
+					this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
+					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+				}
+				
+				if( wallRight )
+				{
+					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+					this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
+					this.line( graphics, x - n/2, y + n/2, x - n, y + n );
+				}
+
+				if( wallBelow )
+				{
+					// above
+					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+					this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
+					this.line( graphics, x + n/2, y - n/2, x + n, y - n );
+				}
+
+				if( wallAbove )
+				{
+					// below
+					this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
+					this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
+					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+				}
+				
+				if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
+				{
+					this.line( graphics, x - n, y - n, x + n, y + n );
+				}
+			}
+		}
+
+		graphics.stroke();
+		graphics.closePath();
+		
 		// frame
 		
 		graphics.strokeStyle = '#888';
@@ -239,6 +356,62 @@ export class CelticCanvas
 				return true;
 		}
 
+		for( let [ x, y ] of this.vertical_walls )
+		{
+			if( x == vx && y == vy )
+				return true;
+		}
+		
+		return false;
+	}
+
+	hasWallAbove( hx: number, hy: number ): boolean
+	{
+		if( hy == 0 )
+			return true;
+		
+		for( let [ x, y ] of this.horizontal_walls )
+		{
+			if( x == hx && y == hy )
+				return true;
+		}
+		
+		return false;
+	}
+
+	hasWallBelow( hx: number, hy: number ): boolean
+	{
+		if( hy == this.grid_height )
+			return true;
+		
+		for( let [ x, y ] of this.horizontal_walls )
+		{
+			if( x == hx && y == hy )
+				return true;
+		}
+		
+		return false;
+	}
+
+	hasWallLeft( vx: number, vy: number ): boolean
+	{
+		if( vx == 0 )
+			return true;
+		
+		for( let [ x, y ] of this.vertical_walls )
+		{
+			if( x == vx && y == vy )
+				return true;
+		}
+		
+		return false;
+	}
+
+	hasWallRight( vx: number, vy: number ): boolean
+	{
+		if( vx == this.grid_width )
+			return true;
+		
 		for( let [ x, y ] of this.vertical_walls )
 		{
 			if( x == vx && y == vy )
