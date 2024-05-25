@@ -3,24 +3,24 @@ export class CelticCanvas
 	graphics: CanvasRenderingContext2D;
 	should_redraw: boolean = true;
 	
-	grid_width = 5;
-	grid_height = 5;
-	grid_spacing = 80;
+	grid_width = 10;
+	grid_height = 10;
+	grid_spacing = 40;
 	margin = 80;
-	dot_size = 0.075;
+	dot_size = 0.15;
 
 	horizontal_walls: number[][] = [
-		[ 2, 2 ],
-		[ 2, 3 ],
-		[ 0.5, 2.5 ],
-		[ 3.5, 2.5 ],
+		[ 4, 4 ],
+		[ 4, 6 ],
+		[ 1, 5 ],
+		[ 7, 5 ],
 	];
 
 	vertical_walls: number[][] = [
-		[ 2, 2 ],
-		[ 3, 2 ],
-		[ 2.5, 0.5 ],
-		[ 2.5, 3.5 ],
+		[ 4, 4 ],
+		[ 6, 4 ],
+		[ 5, 1 ],
+		[ 5, 7 ],
 	];
 
 	constructor( canvas: HTMLCanvasElement, scale )
@@ -84,12 +84,12 @@ export class CelticCanvas
 		/*
 		graphics.beginPath();
 
-		for( var x = 0; x < this.grid_width + 1; x++ )
+		for( var x = 0; x < this.grid_width + 1; x += 2 )
 		{
 			this.line( graphics, x, 0, x, this.grid_height );
 		}
 		
-		for( var y = 0; y < this.grid_height + 1; y++ )
+		for( var y = 0; y < this.grid_height + 1; y += 2 )
 		{
 			this.line( graphics, 0, y, this.grid_width, y );
 		}
@@ -100,15 +100,15 @@ export class CelticCanvas
 		
 		// dots
 
-		for( var x = 0; x < this.grid_width + 1; x++ )
+		for( var x = 0; x < this.grid_width + 1; x += 2 )
 		{
-			for( var y = 0; y < this.grid_height + 1; y++ )
+			for( var y = 0; y < this.grid_height + 1; y += 2 )
 			{
 				this.dot( graphics, x, y, this.dot_size );
 				
 				if( x > 0 && y > 0 )
 				{
-					this.dot( graphics, x - 0.5, y - 0.5, this.dot_size );
+					this.dot( graphics, x - 1, y - 1, this.dot_size );
 				}
 			}
 		}
@@ -121,12 +121,12 @@ export class CelticCanvas
 
 		for( var [ x, y ] of this.horizontal_walls )
 		{	
-			this.line( graphics, x, y, x + 1, y );
+			this.line( graphics, x, y, x + 2, y );
 		}
 
 		for( var [ x, y ] of this.vertical_walls )
 		{	
-			this.line( graphics, x, y, x, y + 1 );
+			this.line( graphics, x, y, x, y + 2 );
 		}
 
 		graphics.stroke();
@@ -138,22 +138,22 @@ export class CelticCanvas
 		graphics.lineWidth = 2;
 		graphics.beginPath();
 
-		for( var y = 0; y < this.grid_height; y++ )
+		for( var y = 0; y < this.grid_height; y += 2 )
 		{
-			for( var x = 0; x < this.grid_width - 1; x++ )
+			for( var x = 0; x < this.grid_width - 2; x += 2 )
 			{
-				if( ! this.hasWall( x + 0.5, y + 0.5, x + 1, y ) )
+				if( ! this.hasWall( x + 1, y + 1, x + 2, y ) )
 				{
 					this.line(
 						graphics,
-						x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
-						x + 1 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
+						x + 1 + this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2,
+						x + 2 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
 					);
 
 					this.line(
 						graphics,
-						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
-						x + 1.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 - this.dot_size * Math.sqrt(2)/2
+						x + 2 - this.dot_size * Math.sqrt(2)/2, y + 2 - this.dot_size * Math.sqrt(2)/2,
+						x + 3 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2
 					);
 				}
 			}
@@ -168,22 +168,22 @@ export class CelticCanvas
 		graphics.lineWidth = 2;
 		graphics.beginPath();
 
-		for( var y = 0; y < this.grid_height - 1; y++ )
+		for( var y = 0; y < this.grid_height - 2; y += 2 )
 		{
-			for( var x = 0; x < this.grid_width; x++ )
+			for( var x = 0; x < this.grid_width; x += 2 )
 			{
-				if( ! this.hasWall( x, y + 1, x + 0.5, y + 0.5 ) )
+				if( ! this.hasWall( x, y + 2, x + 1, y + 1 ) )
 				{
 					this.line(
 						graphics,
-						x + 0.5 - this.dot_size * Math.sqrt(2)/2, y + 0.5 + this.dot_size * Math.sqrt(2)/2,
-						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2
+						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2,
+						x + 2 - this.dot_size * Math.sqrt(2)/2, y + 2 + this.dot_size * Math.sqrt(2)/2
 					);
 
 					this.line(
 						graphics,
-						x + this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2,
-						x + 0.5 + this.dot_size * Math.sqrt(2)/2, y + 1.5 - this.dot_size * Math.sqrt(2)/2
+						x + this.dot_size * Math.sqrt(2)/2, y + 2 - this.dot_size * Math.sqrt(2)/2,
+						x + 1 + this.dot_size * Math.sqrt(2)/2, y + 3 - this.dot_size * Math.sqrt(2)/2
 					);
 				}
 			}
