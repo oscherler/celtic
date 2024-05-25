@@ -53,7 +53,6 @@ export class CelticCanvas
 		}
 	}
 
-	// TODO: element size
 	getSize()
 	{
 		return this.graphics.canvas.getBoundingClientRect();
@@ -157,32 +156,32 @@ export class CelticCanvas
 
 					if( wallLeft )
 					{
-						this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
+						this.line( graphics, x + n,   y - n,   x + n/2, y - n/2 );
 						this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   );
 					}
 					
 					if( wallRight )
 					{
-						this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+						this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
 						this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
-						this.line( graphics, x - n/2, y + n/2, x - n, y + n );
+						this.line( graphics, x - n/2, y + n/2, x - n,   y + n   );
 					}
 
 					if( wallBelow )
 					{
 						// above
-						this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+						this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
 						this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
-						this.line( graphics, x + n/2, y - n/2, x + n, y - n );
+						this.line( graphics, x + n/2, y - n/2, x + n,   y - n   );
 					}
 
 					if( wallAbove )
 					{
 						// below
-						this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
+						this.line( graphics, x - n,   y + n,   x - n/2, y + n/2 );
 						this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   );
 					}
 					
 					if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
