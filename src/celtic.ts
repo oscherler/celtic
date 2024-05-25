@@ -136,73 +136,13 @@ export class CelticCanvas
 		graphics.stroke();
 		graphics.closePath();
 		
-		// up lines
-
-		graphics.strokeStyle = '#888';
-		graphics.lineWidth = 2;
-		graphics.beginPath();
-
-		for( var y = 0; y < this.grid_height; y += 2 )
-		{
-			for( var x = 0; x < this.grid_width - 2; x += 2 )
-			{
-				if( ! this.hasWall( x + 1, y + 1, x + 2, y ) )
-				{
-					this.line(
-						graphics,
-						x + 1 + this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2,
-						x + 2 + this.dot_size * Math.sqrt(2)/2, y + this.dot_size * Math.sqrt(2)/2
-					);
-
-					this.line(
-						graphics,
-						x + 2 - this.dot_size * Math.sqrt(2)/2, y + 2 - this.dot_size * Math.sqrt(2)/2,
-						x + 3 - this.dot_size * Math.sqrt(2)/2, y + 1 - this.dot_size * Math.sqrt(2)/2
-					);
-				}
-			}
-		}
-
-		graphics.stroke();
-		graphics.closePath();
-		
-		// down lines
-
-		graphics.strokeStyle = '#888';
-		graphics.lineWidth = 2;
-		graphics.beginPath();
-
-		for( var y = 0; y < this.grid_height - 2; y += 2 )
-		{
-			for( var x = 0; x < this.grid_width; x += 2 )
-			{
-				if( ! this.hasWall( x, y + 2, x + 1, y + 1 ) )
-				{
-					this.line(
-						graphics,
-						x + 1 - this.dot_size * Math.sqrt(2)/2, y + 1 + this.dot_size * Math.sqrt(2)/2,
-						x + 2 - this.dot_size * Math.sqrt(2)/2, y + 2 + this.dot_size * Math.sqrt(2)/2
-					);
-
-					this.line(
-						graphics,
-						x + this.dot_size * Math.sqrt(2)/2, y + 2 - this.dot_size * Math.sqrt(2)/2,
-						x + 1 + this.dot_size * Math.sqrt(2)/2, y + 3 - this.dot_size * Math.sqrt(2)/2
-					);
-				}
-			}
-		}
-
-		graphics.stroke();
-		graphics.closePath();
-		
 		// segments
 		
 		graphics.strokeStyle = '#00f';
 		graphics.beginPath();
 
 		let n = Math.sqrt(2)/2 - this.dot_size
-		let m = Math.sqrt(2)/4
+		let m = this.dot_size * Math.sqrt(2)/2;
 
 		for( var x = 0; x < this.grid_width + 1; x++ )
 		{
@@ -248,9 +188,21 @@ export class CelticCanvas
 					if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
 					{
 						if( y % 2 == 0 )
-							this.line( graphics, x - n, y - n, x + n, y + n );
+						{
+							// down
+							this.line( graphics, x - n,     y - n,     x + n,     y + n     );
+
+							this.line( graphics, x - m,     y - 1 + m, x + 1 - m, y + m     );
+							this.line( graphics, x - 1 + m, y - m,     x + m,     y + 1 - m );
+						}
 						else
-							this.line( graphics, x - n, y + n, x + n, y - n );
+						{
+							// up
+							this.line( graphics, x - n,     y + n,     x + n,     y - n     );
+
+							this.line( graphics, x - 1 + m, y + m,     x + m,     y - 1 + m );
+							this.line( graphics, x - m,     y + 1 - m, x + 1 - m, y - m     );
+						}
 					}
 				}
 			}
