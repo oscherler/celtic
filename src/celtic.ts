@@ -8,6 +8,9 @@ export class CelticCanvas
 	grid_spacing = 40;
 	margin = 80;
 	dot_size = 0.15;
+	
+	dx: number = 0;
+	dy: number = 0;
 
 	horizontal_walls: number[][] = [
 		[ 4, 4 ],
@@ -51,8 +54,27 @@ export class CelticCanvas
 			else
 				throw Error();
 		}
+		
+		let self = this;
+		canvas.addEventListener( "mousemove", ev => self.onMouseMove( ev ) );
+		canvas.addEventListener( "mouseup", ev => self.onMouseUp( ev ) );
 	}
 
+	onMouseMove( event: MouseEvent )
+	{
+		this.dx = this.p2g( event.layerX );
+		this.dy = this.p2g( event.layerY );
+
+		this.forceRedraw();
+	}
+	
+	onMouseUp( event: MouseEvent )
+	{
+		this.toggleWall( this.p2g( event.layerX ), this.p2g( event.layerY ) );
+
+		this.forceRedraw();
+	}
+	
 	getSize()
 	{
 		return this.graphics.canvas.getBoundingClientRect();
@@ -305,6 +327,45 @@ export class CelticCanvas
 		graphics.stroke();
 		graphics.closePath();
 		*/
+
+		// wall highlight
+
+		graphics.strokeStyle = '#f00';
+		graphics.fillStyle = '#fff';
+		graphics.lineWidth = 3;
+		
+		if( this.dx >= 0 && this.dx <= this.grid_width && this.dy >= 0 && this.dy <= this.grid_height )
+		{
+			var wallX = Math.round( this.dx );
+			var wallY = Math.round( this.dy );
+			
+			if( Math.abs( wallX - this.dx ) < 0.2 && wallX > 0 && wallX < this.grid_width )
+			{
+				// vertical wall
+				if( wallX % 2 == 0 )
+					wallY = 2 * Math.floor( this.dy / 2 );
+				else
+					wallY = 2 * Math.floor( ( this.dy - 1 ) / 2 ) + 1;
+		
+				graphics.beginPath();
+				this.line( graphics, wallX, Math.max( 0, wallY ), wallX, Math.min( this.grid_height, wallY + 2 ) );
+				graphics.stroke();
+				graphics.closePath();
+			}
+			else if( Math.abs( wallY - this.dy ) < 0.2 && wallY > 0 && wallY < this.grid_height )
+			{
+				// horizontal wall
+				if( wallY % 2 == 0 )
+					wallX = 2 * Math.floor( this.dx / 2 );
+				else
+					wallX = 2 * Math.floor( ( this.dx - 1 ) / 2 ) + 1;
+		
+				graphics.beginPath();
+				this.line( graphics, Math.max( 0, wallX ), wallY, Math.min( this.grid_width, wallX + 2 ), wallY );
+				graphics.stroke();
+				graphics.closePath();
+			}
+		}
 		
 		graphics.strokeStyle = save_stroke;
 		graphics.fillStyle = save_fill;
@@ -329,6 +390,11 @@ export class CelticCanvas
 	g2p( x: number ): number
 	{
 		return this.margin + x * this.grid_spacing;
+	}
+
+	p2g( x: number ): number
+	{
+		return ( x - this.margin ) / this.grid_spacing;
 	}
 
 	hasWall( hx: number, hy: number, vx: number, vy: number ): boolean
@@ -402,6 +468,36 @@ export class CelticCanvas
 		}
 		
 		return false;
+	}
+	
+	toggleWall( x: number, y: number )
+	{
+		if( x >= 0 && x <= this.grid_width && y >= 0 && y <= this.grid_height )
+		{
+			var wallX = Math.round( x );
+			var wallY = Math.round( y );
+			
+			if( Math.abs( wallX - x ) < 0.2 && wallX > 0 && wallX < this.grid_width )
+			{
+				// vertical wall
+				if( wallX % 2 == 0 )
+					wallY = 2 * Math.floor( y / 2 );
+				else
+					wallY = 2 * Math.floor( ( y - 1 ) / 2 ) + 1;
+				
+				this.vertical_walls.unshift( [ wallX, wallY ] );
+			}
+			else if( Math.abs( wallY - y ) < 0.2 && wallY > 0 && wallY < this.grid_height )
+			{
+				// horizontal wall
+				if( wallY % 2 == 0 )
+					wallX = 2 * Math.floor( x / 2 );
+				else
+					wallX = 2 * Math.floor( ( x - 1 ) / 2 ) + 1;
+		
+				this.horizontal_walls.unshift( [ wallX, wallY ] );
+			}
+		}
 	}
 
 	update( graphics: CanvasRenderingContext2D )
