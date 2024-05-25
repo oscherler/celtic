@@ -12,23 +12,23 @@ export class CelticCanvas
 	dx: number = 0;
 	dy: number = 0;
 
-	horizontal_walls: number[][] = [
+	horizontal_walls: WallSet = new WallSet( [
 		[ 4, 4 ],
 		[ 4, 6 ],
 		[ 1, 5 ],
 		[ 7, 5 ],
 		[ 6, 2 ],
 		[ 2, 8 ],
-	];
+	] );
 
-	vertical_walls: number[][] = [
+	vertical_walls: WallSet = new WallSet( [
 		[ 4, 4 ],
 		[ 6, 4 ],
 		[ 5, 1 ],
 		[ 5, 7 ],
 		[ 2, 2 ],
 		[ 8, 6 ],
-	];
+	] );
 
 	constructor( canvas: HTMLCanvasElement, scale )
 	{
@@ -145,12 +145,12 @@ export class CelticCanvas
 		graphics.lineWidth = 2;
 		graphics.beginPath();
 
-		for( var [ x, y ] of this.horizontal_walls )
+		for( var [ x, y ] of this.horizontal_walls.walls )
 		{	
 			this.line( graphics, x, y, x + 2, y );
 		}
 
-		for( var [ x, y ] of this.vertical_walls )
+		for( var [ x, y ] of this.vertical_walls.walls )
 		{	
 			this.line( graphics, x, y, x, y + 2 );
 		}
@@ -399,75 +399,32 @@ export class CelticCanvas
 
 	hasWall( hx: number, hy: number, vx: number, vy: number ): boolean
 	{
-		for( let [ x, y ] of this.horizontal_walls )
-		{
-			if( x == hx && y == hy )
-				return true;
-		}
-
-		for( let [ x, y ] of this.vertical_walls )
-		{
-			if( x == vx && y == vy )
-				return true;
-		}
+		if( this.horizontal_walls.has( hx, hy ) )
+			return true;
+		else if( this.vertical_walls.has( vx, vy ) )
+			return true;
 		
 		return false;
 	}
 
 	hasWallAbove( hx: number, hy: number ): boolean
 	{
-		if( hy == 0 )
-			return true;
-		
-		for( let [ x, y ] of this.horizontal_walls )
-		{
-			if( x == hx && y == hy )
-				return true;
-		}
-		
-		return false;
+		return hy == 0 || this.horizontal_walls.has( hx, hy );
 	}
 
 	hasWallBelow( hx: number, hy: number ): boolean
 	{
-		if( hy == this.grid_height )
-			return true;
-		
-		for( let [ x, y ] of this.horizontal_walls )
-		{
-			if( x == hx && y == hy )
-				return true;
-		}
-		
-		return false;
+		return hy == this.grid_height || this.horizontal_walls.has( hx, hy );
 	}
 
 	hasWallLeft( vx: number, vy: number ): boolean
 	{
-		if( vx == 0 )
-			return true;
-		
-		for( let [ x, y ] of this.vertical_walls )
-		{
-			if( x == vx && y == vy )
-				return true;
-		}
-		
-		return false;
+		return vx == 0 || this.vertical_walls.has( vx, vy );
 	}
 
 	hasWallRight( vx: number, vy: number ): boolean
 	{
-		if( vx == this.grid_width )
-			return true;
-		
-		for( let [ x, y ] of this.vertical_walls )
-		{
-			if( x == vx && y == vy )
-				return true;
-		}
-		
-		return false;
+		return vx == this.grid_width || this.vertical_walls.has( vx, vy );
 	}
 	
 	toggleWall( x: number, y: number )
@@ -485,7 +442,7 @@ export class CelticCanvas
 				else
 					wallY = 2 * Math.floor( ( y - 1 ) / 2 ) + 1;
 				
-				this.vertical_walls.unshift( [ wallX, wallY ] );
+				this.vertical_walls.toggle( wallX, wallY );
 			}
 			else if( Math.abs( wallY - y ) < 0.2 && wallY > 0 && wallY < this.grid_height )
 			{
@@ -495,7 +452,7 @@ export class CelticCanvas
 				else
 					wallX = 2 * Math.floor( ( x - 1 ) / 2 ) + 1;
 		
-				this.horizontal_walls.unshift( [ wallX, wallY ] );
+				this.horizontal_walls.toggle( wallX, wallY );
 			}
 		}
 	}
@@ -509,4 +466,43 @@ export class CelticCanvas
 			this.should_redraw = false;
 		}
     }
+}
+
+class WallSet
+{
+	walls: number[][] = []
+	
+	constructor( walls: number[][] )
+	{
+		this.walls = walls;
+	}
+	
+	has( x: number, y: number ): boolean
+	{
+		for( let [ wallX, wallY ] of this.walls )
+		{
+			if( x == wallX && y == wallY )
+				return true;
+		}
+		
+		return false;
+	}
+	
+	toggle( x: number, y: number ): boolean
+	{
+		for( let [ i, [ wallX, wallY ] ] of this.walls.entries() )
+		{
+			if( x == wallX && y == wallY )
+			{
+				// splice does the opposite of what its name means
+				this.walls.splice( i, 1 );
+				
+				return false;
+			}
+		}
+		
+		this.walls.push( [ x, y ] );
+		
+		return true;
+	}
 }
