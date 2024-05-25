@@ -196,119 +196,69 @@ export class CelticCanvas
 		graphics.stroke();
 		graphics.closePath();
 		
-		// up segments
+		// segments
 		
-		graphics.strokeStyle = '#0f0';
-		graphics.fillStyle = '#0f0';
+		graphics.strokeStyle = '#00f';
 		graphics.beginPath();
 
 		let n = Math.sqrt(2)/2 - this.dot_size
 		let m = Math.sqrt(2)/4
 
-		for( var x = 0; x < this.grid_width + 1; x +=2 )
+		for( var x = 0; x < this.grid_width + 1; x++ )
 		{
-			for( var y = 1; y < this.grid_height; y +=2 )
+			for( var y = 0; y < this.grid_height + 1; y++ )
 			{
-				let wallLeft = this.hasWallLeft( x, y - 1 );
-				let wallRight = this.hasWallRight( x, y - 1 );
-				let wallAbove = this.hasWallAbove( x - 1, y );
-				let wallBelow = this.hasWallBelow( x - 1, y );
+				if( x % 2 != y % 2 )
+				{
+					let wallLeft = this.hasWallLeft( x, y - 1 );
+					let wallRight = this.hasWallRight( x, y - 1 );
+					let wallAbove = this.hasWallAbove( x - 1, y );
+					let wallBelow = this.hasWallBelow( x - 1, y );
 
-				if( wallLeft )
-				{
-					this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
-					this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
-					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
-				}
-				
-				if( wallRight )
-				{
-					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
-					this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
-					this.line( graphics, x - n/2, y + n/2, x - n, y + n );
-				}
+					if( wallLeft )
+					{
+						this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
+						this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
+						this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+					}
+					
+					if( wallRight )
+					{
+						this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+						this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
+						this.line( graphics, x - n/2, y + n/2, x - n, y + n );
+					}
 
-				if( wallBelow )
-				{
-					// above
-					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
-					this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
-					this.line( graphics, x + n/2, y - n/2, x + n, y - n );
-				}
+					if( wallBelow )
+					{
+						// above
+						this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
+						this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
+						this.line( graphics, x + n/2, y - n/2, x + n, y - n );
+					}
 
-				if( wallAbove )
-				{
-					// below
-					this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
-					this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
-					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
-				}
-				
-				if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
-				{
-					this.line( graphics, x - n, y + n, x + n, y - n );
+					if( wallAbove )
+					{
+						// below
+						this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
+						this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
+						this.line( graphics, x + n/2, y + n/2, x + n, y + n );
+					}
+					
+					if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
+					{
+						if( y % 2 == 0 )
+							this.line( graphics, x - n, y - n, x + n, y + n );
+						else
+							this.line( graphics, x - n, y + n, x + n, y - n );
+					}
 				}
 			}
 		}
 
 		graphics.stroke();
 		graphics.closePath();
-		
-		// down segments
-		
-		graphics.strokeStyle = '#00f';
-		graphics.fillStyle = '#00f';
-		graphics.beginPath();
 
-		for( var x = 1; x < this.grid_width; x +=2 )
-		{
-			for( var y = 0; y < this.grid_height + 1; y +=2 )
-			{
-				let wallLeft = this.hasWallLeft( x, y - 1 );
-				let wallRight = this.hasWallRight( x, y - 1 );
-				let wallAbove = this.hasWallAbove( x - 1, y );
-				let wallBelow = this.hasWallBelow( x - 1, y );
-				
-				if( wallLeft )
-				{
-					this.line( graphics, x + n, y - n, x + n/2, y - n/2 );
-					this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
-					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
-				}
-				
-				if( wallRight )
-				{
-					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
-					this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
-					this.line( graphics, x - n/2, y + n/2, x - n, y + n );
-				}
-
-				if( wallBelow )
-				{
-					// above
-					this.line( graphics, x - n, y - n, x - n/2, y - n/2 );
-					this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
-					this.line( graphics, x + n/2, y - n/2, x + n, y - n );
-				}
-
-				if( wallAbove )
-				{
-					// below
-					this.line( graphics, x - n, y + n, x - n/2, y + n/2 );
-					this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
-					this.line( graphics, x + n/2, y + n/2, x + n, y + n );
-				}
-				
-				if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
-				{
-					this.line( graphics, x - n, y - n, x + n, y + n );
-				}
-			}
-		}
-
-		graphics.stroke();
-		graphics.closePath();
-		
 		// frame
 		
 		graphics.strokeStyle = '#888';
