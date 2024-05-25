@@ -117,7 +117,8 @@ export class CelticCanvas
 		}
 		
 		// walls
-				
+		
+		/*
 		graphics.strokeStyle = '#f88';
 		graphics.lineWidth = 2;
 		graphics.beginPath();
@@ -134,14 +135,18 @@ export class CelticCanvas
 
 		graphics.stroke();
 		graphics.closePath();
+		*/
 		
 		// segments
 		
 		graphics.strokeStyle = '#00f';
+		graphics.lineWidth = 2;
+		
 		graphics.beginPath();
 
 		let n = Math.sqrt(2)/2 - this.dot_size
 		let m = this.dot_size * Math.sqrt(2)/2;
+		let r = ( 1 + Math.sqrt(2) ) * this.dot_size;
 
 		for( var x = 0; x < this.grid_width + 1; x++ )
 		{
@@ -156,32 +161,95 @@ export class CelticCanvas
 
 					if( wallLeft )
 					{
-						this.line( graphics, x + n,   y - n,   x + n/2, y - n/2 );
+						/* this.line( graphics, x + n,   y - n,   x + n/2, y - n/2 );
 						this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   );
+						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   ); */
+
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x + r ), this.g2p( y + 1 - r ), r * this.grid_spacing, 3 * Math.PI / 4, Math.PI );
+						graphics.arc( this.g2p( x + r ), this.g2p( y - 1 + r ), r * this.grid_spacing, Math.PI, 5 * Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x + 1 ), this.g2p( y ), this.dot_size * this.grid_spacing, 3 * Math.PI / 4, 5 * Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
 					}
 					
 					if( wallRight )
 					{
-						this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
+						/* this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
 						this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
-						this.line( graphics, x - n/2, y + n/2, x - n,   y + n   );
+						this.line( graphics, x - n/2, y + n/2, x - n,   y + n   ); */
+
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x - r ), this.g2p( y - 1 + r ), r * this.grid_spacing, 7 * Math.PI / 4, 2 * Math.PI );
+						graphics.arc( this.g2p( x - r ), this.g2p( y + 1 - r ), r * this.grid_spacing, 0, Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x - 1 ), this.g2p( y ), this.dot_size * this.grid_spacing, - Math.PI / 4, Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
 					}
 
 					if( wallBelow )
 					{
-						// above
-						this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
+						/* this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
 						this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
-						this.line( graphics, x + n/2, y - n/2, x + n,   y - n   );
+						this.line( graphics, x + n/2, y - n/2, x + n,   y - n   ); */
+
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x + 1 - r ), this.g2p( y - r ), r * this.grid_spacing, Math.PI / 4, Math.PI / 2 );
+						graphics.arc( this.g2p( x - 1 + r ), this.g2p( y - r ), r * this.grid_spacing, Math.PI / 2, 3 * Math.PI / 4,  );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x ), this.g2p( y - 1 ), this.dot_size * this.grid_spacing, Math.PI / 4, 3 * Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
 					}
 
 					if( wallAbove )
 					{
-						// below
-						this.line( graphics, x - n,   y + n,   x - n/2, y + n/2 );
+						/* this.line( graphics, x - n,   y + n,   x - n/2, y + n/2 );
 						this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   );
+						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   ); */
+						
+
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x - 1 + r ), this.g2p( y + r ), r * this.grid_spacing, 5 * Math.PI / 4, 3 * Math.PI / 2 );
+						graphics.arc( this.g2p( x + 1 - r ), this.g2p( y + r ), r * this.grid_spacing, 3 * Math.PI / 2, 7 * Math.PI / 4,  );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
+						graphics.arc( this.g2p( x ), this.g2p( y + 1 ), this.dot_size * this.grid_spacing, 5 * Math.PI / 4, 7 * Math.PI / 4 );
+						graphics.stroke();
+						graphics.closePath();
+
+						graphics.beginPath();
 					}
 					
 					if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
@@ -189,18 +257,30 @@ export class CelticCanvas
 						if( y % 2 == 0 )
 						{
 							// down
-							this.line( graphics, x - n,     y - n,     x + n,     y + n     );
+							// this.line( graphics, x - n,     y - n,     x + n,     y + n     );
 
 							this.line( graphics, x - m,     y - 1 + m, x + 1 - m, y + m     );
 							this.line( graphics, x - 1 + m, y - m,     x + m,     y + 1 - m );
+
+							// TODO: this one is empirical
+							this.line( graphics, x - 1 + m,     y + m,         x - 1 + 2 * m, y             );
+							this.line( graphics, x,             y - 1 + 2 * m, x + m,         y - 1 + m     );
+							this.line( graphics, x - m,         y + 1 - m,     x,             y + 1 - 2 * m );
+							this.line( graphics, x + 1 - 2 * m, y,             x + 1 - m,     y - m         );
 						}
 						else
 						{
 							// up
-							this.line( graphics, x - n,     y + n,     x + n,     y - n     );
+							// this.line( graphics, x - n,     y + n,     x + n,     y - n     );
 
 							this.line( graphics, x - 1 + m, y + m,     x + m,     y - 1 + m );
 							this.line( graphics, x - m,     y + 1 - m, x + 1 - m, y - m     );
+
+							// TODO: this one is empirical
+							this.line( graphics, x - 1 + m,     y - m,         x - 1 + 2 * m, y             );
+							this.line( graphics, x,             y + 1 - 2 * m, x + m,         y + 1 - m     );
+							this.line( graphics, x - m,         y - 1 + m,     x,             y - 1 + 2 * m );
+							this.line( graphics, x + 1 - 2 * m, y,             x + 1 - m,     y + m         );
 						}
 					}
 				}
@@ -211,7 +291,8 @@ export class CelticCanvas
 		graphics.closePath();
 
 		// frame
-		
+
+		/*
 		graphics.strokeStyle = '#888';
 		graphics.lineWidth = 2;
 		graphics.beginPath();
@@ -223,7 +304,8 @@ export class CelticCanvas
 		
 		graphics.stroke();
 		graphics.closePath();
-
+		*/
+		
 		graphics.strokeStyle = save_stroke;
 		graphics.fillStyle = save_fill;
 		graphics.lineWidth = save_width;
