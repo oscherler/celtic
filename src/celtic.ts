@@ -409,21 +409,33 @@ export class CelticCanvas
 
 	hasWallAbove( hx: number, hy: number ): boolean
 	{
+		if( hy >= this.grid_height || hx >= this.grid_width - 1 )
+			return false;
+		
 		return hy == 0 || this.horizontal_walls.has( hx, hy );
 	}
 
 	hasWallBelow( hx: number, hy: number ): boolean
 	{
+		if( hy <= 0 || hx >= this.grid_width - 1 )
+			return false;
+		
 		return hy == this.grid_height || this.horizontal_walls.has( hx, hy );
 	}
 
 	hasWallLeft( vx: number, vy: number ): boolean
 	{
+		if( vx >= this.grid_width || vy >= this.grid_height - 1 )
+			return false;
+		
 		return vx == 0 || this.vertical_walls.has( vx, vy );
 	}
 
 	hasWallRight( vx: number, vy: number ): boolean
 	{
+		if( vx <= 0 || vy >= this.grid_height - 1 )
+			return false;
+
 		return vx == this.grid_width || this.vertical_walls.has( vx, vy );
 	}
 	
