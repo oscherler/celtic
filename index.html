@@ -8,7 +8,16 @@
 		}
 		label
 		{
-			display: block;
+			display: inline;
+		}
+		.controls
+		{
+			margin: 10px;
+		}
+		.controls input
+		{
+			width: 3em;
+			margin-right: 3em;
 		}
 	</style>
 	<script src="https://unpkg.com/systemjs@6.11.0/dist/s.js"></script>
@@ -19,6 +28,10 @@
 	</script>
 </head>
 <body>
+	<div class="controls">
+		<label>Width: <input type="number" id="width" value="5"></label>
+		<label>Heigth: <input type="number" id="height" value="5"></label>
+	</div>
 	<canvas id="canvas" width="600" height="600"></canvas>
 </body>
 </html>
