@@ -55,19 +55,14 @@ export class CelticCanvas
 
 	onMouseMove( event: MouseEvent )
 	{
-		let p = this.v2p( event.clientX, event.clientY );
-		
-		this.dx = this.p2g( p.x );
-		this.dy = this.p2g( p.y );
+		[ this.dx, this.dy ] = this.p2g( this.v2p( [ event.clientX, event.clientY ] ) );
 
 		this.forceRedraw();
 	}
 	
 	onMouseUp( event: MouseEvent )
 	{
-		let p = this.v2p( event.clientX, event.clientY );
-
-		this.toggleWall( this.p2g( p.x ), this.p2g( p.y ) );
+		this.toggleWall( this.p2g( this.v2p( [ event.clientX, event.clientY ] ) ) );
 
 		this.forceRedraw();
 	}
@@ -188,13 +183,13 @@ export class CelticCanvas
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x + r ), this.g2p( y + 1 - r ), r * this.grid_spacing, 3 * Math.PI / 4, Math.PI );
-						graphics.arc( this.g2p( x + r ), this.g2p( y - 1 + r ), r * this.grid_spacing, Math.PI, 5 * Math.PI / 4 );
+						this.arc( graphics, x + r, y + 1 - r, r, 3 * Math.PI / 4, Math.PI );
+						this.arc( graphics, x + r, y - 1 + r, r, Math.PI, 5 * Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x + 1 ), this.g2p( y ), this.dot_size * this.grid_spacing, 3 * Math.PI / 4, 5 * Math.PI / 4 );
+						this.arc( graphics, x + 1, y, this.dot_size, 3 * Math.PI / 4, 5 * Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
@@ -211,13 +206,13 @@ export class CelticCanvas
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x - r ), this.g2p( y - 1 + r ), r * this.grid_spacing, 7 * Math.PI / 4, 2 * Math.PI );
-						graphics.arc( this.g2p( x - r ), this.g2p( y + 1 - r ), r * this.grid_spacing, 0, Math.PI / 4 );
+						this.arc( graphics, x - r, y - 1 + r, r, 7 * Math.PI / 4, 2 * Math.PI );
+						this.arc( graphics, x - r, y + 1 - r, r, 0, Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x - 1 ), this.g2p( y ), this.dot_size * this.grid_spacing, - Math.PI / 4, Math.PI / 4 );
+						this.arc( graphics, x - 1, y, this.dot_size, - Math.PI / 4, Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
@@ -234,13 +229,13 @@ export class CelticCanvas
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x + 1 - r ), this.g2p( y - r ), r * this.grid_spacing, Math.PI / 4, Math.PI / 2 );
-						graphics.arc( this.g2p( x - 1 + r ), this.g2p( y - r ), r * this.grid_spacing, Math.PI / 2, 3 * Math.PI / 4,  );
+						this.arc( graphics, x + 1 - r, y - r, r, Math.PI / 4, Math.PI / 2 );
+						this.arc( graphics, x - 1 + r, y - r, r, Math.PI / 2, 3 * Math.PI / 4,  );
 						graphics.stroke();
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x ), this.g2p( y - 1 ), this.dot_size * this.grid_spacing, Math.PI / 4, 3 * Math.PI / 4 );
+						this.arc( graphics, x, y - 1, this.dot_size, Math.PI / 4, 3 * Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
@@ -258,13 +253,13 @@ export class CelticCanvas
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x - 1 + r ), this.g2p( y + r ), r * this.grid_spacing, 5 * Math.PI / 4, 3 * Math.PI / 2 );
-						graphics.arc( this.g2p( x + 1 - r ), this.g2p( y + r ), r * this.grid_spacing, 3 * Math.PI / 2, 7 * Math.PI / 4,  );
+						this.arc( graphics, x - 1 + r, y + r, r, 5 * Math.PI / 4, 3 * Math.PI / 2 );
+						this.arc( graphics, x + 1 - r, y + r, r, 3 * Math.PI / 2, 7 * Math.PI / 4,  );
 						graphics.stroke();
 						graphics.closePath();
 
 						graphics.beginPath();
-						graphics.arc( this.g2p( x ), this.g2p( y + 1 ), this.dot_size * this.grid_spacing, 5 * Math.PI / 4, 7 * Math.PI / 4 );
+						this.arc( graphics, x, y + 1, this.dot_size, 5 * Math.PI / 4, 7 * Math.PI / 4 );
 						graphics.stroke();
 						graphics.closePath();
 
@@ -371,40 +366,56 @@ export class CelticCanvas
 
 	line( graphics: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number )
 	{
-		graphics.moveTo( this.g2p( x1 ), this.g2p( y1 ) );
-		graphics.lineTo( this.g2p( x2 ), this.g2p( y2 ) );
+		let [ p1x, p1y ] = this.g2p( [ x1, y1 ] );
+		let [ p2x, p2y ] = this.g2p( [ x2, y2 ] );
+		
+		graphics.moveTo( p1x, p1y );
+		graphics.lineTo( p2x, p2y );
 	}
 
 	dot( graphics: CanvasRenderingContext2D, x: number, y: number, r: number )
 	{
 		graphics.beginPath();
-		graphics.arc( this.g2p( x ), this.g2p( y ), r * this.grid_spacing, 0, 2 * Math.PI );
+		this.arc( graphics, x, y, r, 0, 2 * Math.PI );
 		graphics.stroke();
 		graphics.fill();
 		graphics.closePath();
 	}
 	
+	arc( graphics: CanvasRenderingContext2D, x: number, y: number, r: number, start: number, end: number )
+	{
+		let [ px, py ] = this.g2p( [ x, y ] );
+		
+		graphics.arc( px, py, r * this.grid_spacing, start, end );
+	}
+	
 	// convert viewport coordinates to canvas pixel coordinates
-	v2p( vx: number, vy: number ): { x: number, y: number }
+	v2p( [ vx, vy ]: number[] ): number[]
 	{
 		let bb = this.canvas.getBoundingClientRect();
 
 		const px = Math.floor( ( vx - bb.left) / bb.width * this.canvas.width );
 		const py = Math.floor( ( vy - bb.top) / bb.height * this.canvas.height );
 		
-		return { x: px, y: py };
+		return [ px, py ];
 	}
 	
 	// convert knot grid coordinates to canvas pixel coordinates
-	g2p( x: number ): number
+	g2p( [ gx, gy ]: number[] ): number[]
 	{
-		return this.margin + x * this.grid_spacing;
+		return [
+			this.margin + gx * this.grid_spacing,
+			this.margin + gy * this.grid_spacing
+		];
 	}
 
 	// convert canvas pixel coordinates to knot grid coordinates
-	p2g( x: number ): number
+	p2g( [ px, py ]: number[] ): number[]
 	{
-		return ( x - this.margin ) / this.grid_spacing;
+		return [
+			( px - this.margin ) / this.grid_spacing,
+			( py - this.margin ) / this.grid_spacing
+		];
 	}
 
 	hasWall( hx: number, hy: number, vx: number, vy: number ): boolean
@@ -449,8 +460,8 @@ export class CelticCanvas
 		return vx == this.grid_width || this.vertical_walls.has( vx, vy );
 	}
 	
-	toggleWall( x: number, y: number )
-	{
+	toggleWall( [ x, y ]: number[] )
+	{		
 		if( x >= 0 && x <= this.grid_width && y >= 0 && y <= this.grid_height )
 		{
 			var wallX = Math.round( x );
