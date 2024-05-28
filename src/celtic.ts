@@ -99,20 +99,17 @@ export class CelticCanvas
 		// grid
 
 		/*
-		graphics.beginPath();
-
-		for( var x = 0; x < this.grid_width + 1; x += 2 )
-		{
-			this.line( graphics, x, 0, x, this.grid_height );
-		}
-		
-		for( var y = 0; y < this.grid_height + 1; y += 2 )
-		{
-			this.line( graphics, 0, y, this.grid_width, y );
-		}
-
-		graphics.stroke();
-		graphics.closePath();
+		this.stroke( graphics, ( g ) => {
+			for( var x = 0; x < this.grid_width + 1; x += 2 )
+			{
+				this.line( g, x, 0, x, this.grid_height );
+			}
+			
+			for( var y = 0; y < this.grid_height + 1; y += 2 )
+			{
+				this.line( g, 0, y, this.grid_width, y );
+			}
+		} );
 		*/
 		
 		// dots
@@ -135,20 +132,18 @@ export class CelticCanvas
 		/*
 		graphics.strokeStyle = '#f88';
 		graphics.lineWidth = 2;
-		graphics.beginPath();
 
-		for( var [ x, y ] of this.horizontal_walls.walls )
-		{	
-			this.line( graphics, x, y, x + 2, y );
-		}
+		this.stroke( graphics, ( g ) => {
+			for( var [ x, y ] of this.horizontal_walls.walls )
+			{	
+				this.line( graphics, x, y, x + 2, y );
+			}
 
-		for( var [ x, y ] of this.vertical_walls.walls )
-		{	
-			this.line( graphics, x, y, x, y + 2 );
-		}
-
-		graphics.stroke();
-		graphics.closePath();
+			for( var [ x, y ] of this.vertical_walls.walls )
+			{	
+				this.line( graphics, x, y, x, y + 2 );
+			}
+		} );
 		*/
 		
 		// segments
@@ -156,8 +151,6 @@ export class CelticCanvas
 		graphics.strokeStyle = '#00f';
 		graphics.lineWidth = 2;
 		
-		graphics.beginPath();
-
 		let n = Math.sqrt(2)/2 - this.dot_size
 		let m = this.dot_size * Math.sqrt(2)/2;
 		let r = ( 1 + Math.sqrt(2) ) * this.dot_size;
@@ -175,149 +168,127 @@ export class CelticCanvas
 
 					if( wallLeft )
 					{
-						/* this.line( graphics, x + n,   y - n,   x + n/2, y - n/2 );
-						this.line( graphics, x + n/2, y - n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   ); */
+						/* this.stroke( graphics, ( g ) => {
+							this.line( g, x + n,   y - n,   x + n/2, y - n/2 );
+							this.line( g, x + n/2, y - n/2, x + n/2, y + n/2 );
+							this.line( g, x + n/2, y + n/2, x + n,   y + n   );
+						} ); */
 
-						graphics.stroke();
-						graphics.closePath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x + r, y + 1 - r, r, 3 * Math.PI / 4, Math.PI );
+							this.arc( g, x + r, y - 1 + r, r, Math.PI, 5 * Math.PI / 4 );
+						} );
 
-						graphics.beginPath();
-						this.arc( graphics, x + r, y + 1 - r, r, 3 * Math.PI / 4, Math.PI );
-						this.arc( graphics, x + r, y - 1 + r, r, Math.PI, 5 * Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
-						this.arc( graphics, x + 1, y, this.dot_size, 3 * Math.PI / 4, 5 * Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x + 1, y, this.dot_size, 3 * Math.PI / 4, 5 * Math.PI / 4 );
+						} );
 					}
 					
 					if( wallRight )
 					{
-						/* this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
-						this.line( graphics, x - n/2, y - n/2, x - n/2, y + n/2 );
-						this.line( graphics, x - n/2, y + n/2, x - n,   y + n   ); */
+						/* this.stroke( graphics, ( g ) => {
+							this.line( g, x - n,   y - n,   x - n/2, y - n/2 );
+							this.line( g, x - n/2, y - n/2, x - n/2, y + n/2 );
+							this.line( g, x - n/2, y + n/2, x - n,   y + n   );
+						} ); */
 
-						graphics.stroke();
-						graphics.closePath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x - r, y - 1 + r, r, 7 * Math.PI / 4, 2 * Math.PI );
+							this.arc( g, x - r, y + 1 - r, r, 0, Math.PI / 4 );
+						} );
 
-						graphics.beginPath();
-						this.arc( graphics, x - r, y - 1 + r, r, 7 * Math.PI / 4, 2 * Math.PI );
-						this.arc( graphics, x - r, y + 1 - r, r, 0, Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
-						this.arc( graphics, x - 1, y, this.dot_size, - Math.PI / 4, Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x - 1, y, this.dot_size, - Math.PI / 4, Math.PI / 4 );
+						} );
 					}
 
 					if( wallBelow )
 					{
-						/* this.line( graphics, x - n,   y - n,   x - n/2, y - n/2 );
-						this.line( graphics, x - n/2, y - n/2, x + n/2, y - n/2 );
-						this.line( graphics, x + n/2, y - n/2, x + n,   y - n   ); */
+						/* this.stroke( graphics, ( g ) => {
+							this.line( g, x - n,   y - n,   x - n/2, y - n/2 );
+							this.line( g, x - n/2, y - n/2, x + n/2, y - n/2 );
+							this.line( g, x + n/2, y - n/2, x + n,   y - n   );
+						} ); */
 
-						graphics.stroke();
-						graphics.closePath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x + 1 - r, y - r, r, Math.PI / 4, Math.PI / 2 );
+							this.arc( g, x - 1 + r, y - r, r, Math.PI / 2, 3 * Math.PI / 4,  );
+						} );
 
-						graphics.beginPath();
-						this.arc( graphics, x + 1 - r, y - r, r, Math.PI / 4, Math.PI / 2 );
-						this.arc( graphics, x - 1 + r, y - r, r, Math.PI / 2, 3 * Math.PI / 4,  );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
-						this.arc( graphics, x, y - 1, this.dot_size, Math.PI / 4, 3 * Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x, y - 1, this.dot_size, Math.PI / 4, 3 * Math.PI / 4 );
+						} );
 					}
 
 					if( wallAbove )
 					{
-						/* this.line( graphics, x - n,   y + n,   x - n/2, y + n/2 );
-						this.line( graphics, x - n/2, y + n/2, x + n/2, y + n/2 );
-						this.line( graphics, x + n/2, y + n/2, x + n,   y + n   ); */
-						
+						/* this.stroke( graphics, ( g ) => {
+							this.line( g, x - n,   y + n,   x - n/2, y + n/2 );
+							this.line( g, x - n/2, y + n/2, x + n/2, y + n/2 );
+							this.line( g, x + n/2, y + n/2, x + n,   y + n   );
+						} ); */
 
-						graphics.stroke();
-						graphics.closePath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x - 1 + r, y + r, r, 5 * Math.PI / 4, 3 * Math.PI / 2 );
+							this.arc( g, x + 1 - r, y + r, r, 3 * Math.PI / 2, 7 * Math.PI / 4,  );
+						} );
 
-						graphics.beginPath();
-						this.arc( graphics, x - 1 + r, y + r, r, 5 * Math.PI / 4, 3 * Math.PI / 2 );
-						this.arc( graphics, x + 1 - r, y + r, r, 3 * Math.PI / 2, 7 * Math.PI / 4,  );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
-						this.arc( graphics, x, y + 1, this.dot_size, 5 * Math.PI / 4, 7 * Math.PI / 4 );
-						graphics.stroke();
-						graphics.closePath();
-
-						graphics.beginPath();
+						this.stroke( graphics, ( g ) => {
+							this.arc( g, x, y + 1, this.dot_size, 5 * Math.PI / 4, 7 * Math.PI / 4 );
+						} );
 					}
 					
 					if( ! wallLeft && ! wallRight && ! wallAbove && ! wallBelow )
 					{
 						if( y % 2 == 0 )
 						{
-							// down
-							// this.line( graphics, x - n,     y - n,     x + n,     y + n     );
+							this.stroke( graphics, ( g ) => {
+								// down
+								// this.line( g, x - n,     y - n,     x + n,     y + n     );
 
-							this.line( graphics, x - m,     y - 1 + m, x + 1 - m, y + m     );
-							this.line( graphics, x - 1 + m, y - m,     x + m,     y + 1 - m );
+								this.line( g, x - m,     y - 1 + m, x + 1 - m, y + m     );
+								this.line( g, x - 1 + m, y - m,     x + m,     y + 1 - m );
 
-							// TODO: this one is empirical
-							this.line( graphics, x - 1 + m,     y + m,         x - 1 + 2 * m, y             );
-							this.line( graphics, x,             y - 1 + 2 * m, x + m,         y - 1 + m     );
-							this.line( graphics, x - m,         y + 1 - m,     x,             y + 1 - 2 * m );
-							this.line( graphics, x + 1 - 2 * m, y,             x + 1 - m,     y - m         );
+								// TODO: this one is empirical
+								this.line( g, x - 1 + m,     y + m,         x - 1 + 2 * m, y             );
+								this.line( g, x,             y - 1 + 2 * m, x + m,         y - 1 + m     );
+								this.line( g, x - m,         y + 1 - m,     x,             y + 1 - 2 * m );
+								this.line( g, x + 1 - 2 * m, y,             x + 1 - m,     y - m         );
+							} );
 						}
 						else
 						{
-							// up
-							// this.line( graphics, x - n,     y + n,     x + n,     y - n     );
+							this.stroke( graphics, ( g ) => {
+								// up
+								// this.line( g, x - n,     y + n,     x + n,     y - n     );
 
-							this.line( graphics, x - 1 + m, y + m,     x + m,     y - 1 + m );
-							this.line( graphics, x - m,     y + 1 - m, x + 1 - m, y - m     );
+								this.line( g, x - 1 + m, y + m,     x + m,     y - 1 + m );
+								this.line( g, x - m,     y + 1 - m, x + 1 - m, y - m     );
 
-							// TODO: this one is empirical
-							this.line( graphics, x - 1 + m,     y - m,         x - 1 + 2 * m, y             );
-							this.line( graphics, x,             y + 1 - 2 * m, x + m,         y + 1 - m     );
-							this.line( graphics, x - m,         y - 1 + m,     x,             y - 1 + 2 * m );
-							this.line( graphics, x + 1 - 2 * m, y,             x + 1 - m,     y + m         );
+								// TODO: this one is empirical
+								this.line( g, x - 1 + m,     y - m,         x - 1 + 2 * m, y             );
+								this.line( g, x,             y + 1 - 2 * m, x + m,         y + 1 - m     );
+								this.line( g, x - m,         y - 1 + m,     x,             y - 1 + 2 * m );
+								this.line( g, x + 1 - 2 * m, y,             x + 1 - m,     y + m         );
+							} );
 						}
 					}
 				}
 			}
 		}
 
-		graphics.stroke();
-		graphics.closePath();
-
 		// frame
 
 		/*
 		graphics.strokeStyle = '#888';
 		graphics.lineWidth = 2;
-		graphics.beginPath();
 
-		this.line( graphics, 0, 0, this.grid_width, 0 );
-		this.line( graphics, this.grid_width, 0, this.grid_width, this.grid_height );
-		this.line( graphics, this.grid_width, this.grid_height, 0, this.grid_height );
-		this.line( graphics, 0, this.grid_height, 0, 0 );
-		
-		graphics.stroke();
-		graphics.closePath();
+		this.stroke( graphics, ( g ) => {
+			this.line( g, 0, 0, this.grid_width, 0 );
+			this.line( g, this.grid_width, 0, this.grid_width, this.grid_height );
+			this.line( g, this.grid_width, this.grid_height, 0, this.grid_height );
+			this.line( g, 0, this.grid_height, 0, 0 );
+		} );
 		*/
 
 		// wall highlight
@@ -339,10 +310,9 @@ export class CelticCanvas
 				else
 					wallY = 2 * Math.floor( ( this.dy - 1 ) / 2 ) + 1;
 		
-				graphics.beginPath();
-				this.line( graphics, wallX, Math.max( 0, wallY ), wallX, Math.min( this.grid_height, wallY + 2 ) );
-				graphics.stroke();
-				graphics.closePath();
+				this.stroke( graphics, ( g ) => {
+					this.line( g, wallX, Math.max( 0, wallY ), wallX, Math.min( this.grid_height, wallY + 2 ) );
+				} );
 			}
 			else if( Math.abs( wallY - this.dy ) < 0.2 && wallY > 0 && wallY < this.grid_height )
 			{
@@ -352,10 +322,9 @@ export class CelticCanvas
 				else
 					wallX = 2 * Math.floor( ( this.dx - 1 ) / 2 ) + 1;
 		
-				graphics.beginPath();
-				this.line( graphics, Math.max( 0, wallX ), wallY, Math.min( this.grid_width, wallX + 2 ), wallY );
-				graphics.stroke();
-				graphics.closePath();
+				this.stroke( graphics, ( g ) => {
+					this.line( g, Math.max( 0, wallX ), wallY, Math.min( this.grid_width, wallX + 2 ), wallY );
+				} );
 			}
 		}
 		
@@ -387,6 +356,14 @@ export class CelticCanvas
 		let [ px, py ] = this.g2p( [ x, y ] );
 		
 		graphics.arc( px, py, r * this.grid_spacing, start, end );
+	}
+	
+	stroke( graphics: CanvasRenderingContext2D, operations: ( graphics: CanvasRenderingContext2D ) => void )
+	{
+		graphics.beginPath();
+		operations( graphics );
+		graphics.stroke();
+		graphics.closePath();
 	}
 	
 	// convert viewport coordinates to canvas pixel coordinates
