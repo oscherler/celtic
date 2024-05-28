@@ -3,31 +3,21 @@ export class CelticCanvas
 	graphics: CanvasRenderingContext2D;
 	should_redraw: boolean = true;
 	
-	grid_width = 10;
-	grid_height = 10;
+	grid_width = 6;
+	grid_height = 4;
 	grid_spacing = 40;
-	margin = 80;
+	margin = 10;
 	dot_size = 0.15;
 	
 	dx: number = 0;
 	dy: number = 0;
 
 	horizontal_walls: WallSet = new WallSet( [
-		[ 4, 4 ],
-		[ 4, 6 ],
-		[ 1, 5 ],
-		[ 7, 5 ],
-		[ 6, 2 ],
-		[ 2, 8 ],
 	] );
 
 	vertical_walls: WallSet = new WallSet( [
-		[ 4, 4 ],
-		[ 6, 4 ],
-		[ 5, 1 ],
-		[ 5, 7 ],
-		[ 2, 2 ],
-		[ 8, 6 ],
+		[ 2, 0 ],
+		[ 4, 2 ],
 	] );
 
 	constructor( canvas: HTMLCanvasElement, scale )
@@ -56,8 +46,8 @@ export class CelticCanvas
 		}
 		
 		let self = this;
-		canvas.addEventListener( "mousemove", ev => self.onMouseMove( ev ) );
-		canvas.addEventListener( "mouseup", ev => self.onMouseUp( ev ) );
+		this.canvas.addEventListener( "mousemove", ev => self.onMouseMove( ev ) );
+		this.canvas.addEventListener( "mouseup", ev => self.onMouseUp( ev ) );
 	}
 
 	onMouseMove( event: MouseEvent )
