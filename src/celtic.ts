@@ -9,6 +9,7 @@ export class CelticCanvas
 	margin = 10;
 	dot_size = 0.15;
 	
+	canvas: HTMLCanvasElement
 	dx: number = 0;
 	dy: number = 0;
 
@@ -22,19 +23,21 @@ export class CelticCanvas
 
 	constructor( canvas: HTMLCanvasElement, scale )
 	{
-		const rect = canvas.getBoundingClientRect();
+		this.canvas = canvas;
+		
+		let bb = this.canvas.getBoundingClientRect();
 
 		// increase the actual size of our canvas
-		canvas.width = rect.width * scale;
-		canvas.height = rect.height * scale;
+		this.canvas.width = bb.width * scale;
+		this.canvas.height = bb.height * scale;
 		// scale everything down using CSS
-		canvas.style.width = rect.width + 'px';
-		canvas.style.height = rect.height + 'px';
+		this.canvas.style.width = bb.width + 'px';
+		this.canvas.style.height = bb.height + 'px';
 
-		if( canvas.getContext )
+		if( this.canvas.getContext )
 		{
 
-			const graphics = canvas.getContext('2d');
+			const graphics = this.canvas.getContext('2d');
 
 			// ensure all drawing operations are scaled
 			graphics.scale( scale, scale );
@@ -52,15 +55,19 @@ export class CelticCanvas
 
 	onMouseMove( event: MouseEvent )
 	{
-		this.dx = this.p2g( event.layerX );
-		this.dy = this.p2g( event.layerY );
+		let p = this.v2p( event.clientX, event.clientY );
+		
+		this.dx = this.p2g( p.x );
+		this.dy = this.p2g( p.y );
 
 		this.forceRedraw();
 	}
 	
 	onMouseUp( event: MouseEvent )
 	{
-		this.toggleWall( this.p2g( event.layerX ), this.p2g( event.layerY ) );
+		let p = this.v2p( event.clientX, event.clientY );
+
+		this.toggleWall( this.p2g( p.x ), this.p2g( p.y ) );
 
 		this.forceRedraw();
 	}
@@ -377,11 +384,24 @@ export class CelticCanvas
 		graphics.closePath();
 	}
 	
+	// convert viewport coordinates to canvas pixel coordinates
+	v2p( vx: number, vy: number ): { x: number, y: number }
+	{
+		let bb = this.canvas.getBoundingClientRect();
+
+		const px = Math.floor( ( vx - bb.left) / bb.width * this.canvas.width );
+		const py = Math.floor( ( vy - bb.top) / bb.height * this.canvas.height );
+		
+		return { x: px, y: py };
+	}
+	
+	// convert knot grid coordinates to canvas pixel coordinates
 	g2p( x: number ): number
 	{
 		return this.margin + x * this.grid_spacing;
 	}
 
+	// convert canvas pixel coordinates to knot grid coordinates
 	p2g( x: number ): number
 	{
 		return ( x - this.margin ) / this.grid_spacing;
